@@ -49,7 +49,7 @@ class AudioTrack extends HTMLElement {
   }
 
   get src() {
-    this.#src
+    return this.#src
   }
 
 

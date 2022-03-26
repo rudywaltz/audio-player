@@ -58,3 +58,39 @@ test('element remove should dispatch "track.delete" event', () => {
 
   expect(trackDeleteEventSpy.mock.calls[0][0].detail).toEqual({ uuid })
 })
+
+test('getters return values', () => {
+  const title = 'Song Title'
+  const src = 'https://songurl'
+  const uuid = 123
+ window.crypto = {
+  randomUUID: jest.fn().mockReturnValue(uuid)
+ }
+
+
+ const trackUpdateEventSpy = jest.fn()
+ document.addEventListener('track.update', trackUpdateEventSpy)
+
+ document.body.innerHTML = `<audio-track src="${src}" title="${title}"></audio-track>`
+ const audioPlayer = document.querySelector('audio-track')
+
+ expect(audioPlayer.title).toEqual(title)
+ expect(audioPlayer.src).toEqual(src)
+})
+
+test('crypto fallback', () => {
+  const title = 'Song Title'
+  const src = 'https://songurl'
+  const uuid = '10000000-1000-4000-8000-100000000000'
+ window.crypto = {
+  getRandomValues: jest.fn().mockReturnValue('random')
+ }
+
+
+ const trackUpdateEventSpy = jest.fn()
+ document.addEventListener('track.update', trackUpdateEventSpy)
+
+ document.body.innerHTML = `<audio-track src="${src}" title="${title}"></audio-track>`
+ expect(trackUpdateEventSpy.mock.calls[0][0].detail).toEqual({ title, src, uuid })
+
+})

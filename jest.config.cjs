@@ -8,7 +8,8 @@ module.exports = {
   testMatch: ['**/test/*.js'],
   testEnvironment: "@happy-dom/jest-environment",
   "collectCoverageFrom": [
-    "src/**/*.js"
+    "src/**/*.js",
+    "!src/dist/**"
   ],
   // coverageThreshold: {
   //   global: {

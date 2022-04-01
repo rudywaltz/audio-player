@@ -1,4 +1,6 @@
-class TrackList extends HTMLElement {
+import { CustomElement } from "./customElement";
+
+class TrackList extends CustomElement {
   list = []
   wrapper = document.createElement('ul')
 
@@ -55,7 +57,8 @@ class TrackList extends HTMLElement {
     const fragment = document.createDocumentFragment();
     for (let index = 0; index < this.list.length; index++) {
       const element = document.createElement('li');
-      element.textContent = JSON.stringify(this.list[index]);
+      const { title, src } = this.list[index]
+      element.innerHTML = `<strong>${title}</strong>: ${src}`;
       fragment.appendChild(element)
     }
     this.wrapper.appendChild(fragment)

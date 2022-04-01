@@ -4,16 +4,20 @@
   },
   "name": "audio-player",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "devDependencies": {
-    "@happy-dom/jest-environment": "^2.50.0",
+    "@happy-dom/jest-environment": "2.55.0",
     "jest": "^27.5.1",
-    "light-server": "^2.9.1"
+    "vite": "2.9.1",
+    "vite-jest": "^0.1.4"
   },
   "scripts": {
-    "start": "light-server -s ./src -w './src/**'",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "dev": "vite src",
+    "build": "vite build src",
+    "preview": "vite preview src",
+    "test": "vite-jest  --no-cache",
+    "test:watch": "vite-jest --watch",
+    "test:coverage": "vite-jest  --no-cache --coverage"
   },
   "author": "",
   "license": "ISC",

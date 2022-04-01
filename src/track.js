@@ -1,4 +1,6 @@
-class AudioTrack extends HTMLElement {
+import { CustomElement } from './customElement.js'
+
+class AudioTrack extends CustomElement {
   #title = ''
   #src = ''
   #uuid = ''
@@ -26,18 +28,13 @@ class AudioTrack extends HTMLElement {
     this.dispatchEvent(disconnectedEvent)
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    const transformedName = name.replace(/-([a-z])/g, g => g[1].toUpperCase());
-    this[transformedName] = newValue;
-    this.update()
-  }
-
   static get observedAttributes() {
     return ['title', 'src'];
   }
 
   set title(value) {
     this.#title = value
+    this.update()
   }
 
   get title() {
@@ -46,6 +43,7 @@ class AudioTrack extends HTMLElement {
 
   set src(value) {
     this.#src = value
+    this.update
   }
 
   get src() {

@@ -2,6 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  preset: 'vite-jest',
   clearMocks: true,
   coverageDirectory: 'coverage',
   testMatch: ['**/test/*.js'],

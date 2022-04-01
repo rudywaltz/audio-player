@@ -1,4 +1,5 @@
-require('../src/track')
+import { jest } from '@jest/globals';
+import "../src/track.js"
 
 test('attaching to the dom should call random UUID generation', () => {
  window.crypto = {

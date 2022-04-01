@@ -2,7 +2,6 @@ import { CustomElement } from "../src/customElement";
 
 
 describe('customElement', () => {
-  beforeAll()
   test('attribute change', () => {
     class QQQ extends CustomElement {
       #simpleValue = ''

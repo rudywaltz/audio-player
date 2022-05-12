@@ -8,7 +8,7 @@
   "devDependencies": {
     "@happy-dom/jest-environment": "2.55.0",
     "jest": "^27.5.1",
-    "vite": "2.9.1",
+    "vite": "2.9.9",
     "vite-jest": "^0.1.4"
   },
   "scripts": {

@@ -5,18 +5,19 @@ module.exports = {
   preset: 'vite-jest',
   clearMocks: true,
   coverageDirectory: 'coverage',
-  testMatch: ['**/test/*.js'],
+  testMatch: ['**/test/**/*.js', "!**/__mocks__/*"],
+  setupFilesAfterEnv: ["./setup.js"],
   testEnvironment: "@happy-dom/jest-environment",
   "collectCoverageFrom": [
     "src/**/*.js",
     "!src/dist/**"
   ],
-  // coverageThreshold: {
-  //   global: {
-  //     branches: 100,
-  //     functions: 100,
-  //     lines: 100,
-  //     statements: 100,
-  //   },
-  // },
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
 };

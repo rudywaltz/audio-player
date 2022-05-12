@@ -3,7 +3,7 @@ import { CustomElement } from "../src/customElement";
 
 describe('customElement', () => {
   test('attribute change', () => {
-    class QQQ extends CustomElement {
+    class TestComponent extends CustomElement {
       #simpleValue = ''
       #complexValue =''
 
@@ -28,7 +28,7 @@ describe('customElement', () => {
       }
     }
     const testValue = 'test value'
-    customElements.define('test-component', QQQ)
+    customElements.define('test-component', TestComponent)
 
     const audioTrackELement = document.createElement('test-component')
     document.body.appendChild(audioTrackELement)

@@ -1,25 +1,24 @@
 {
-  "dependencies": {
-    "http-server": "^14.1.0"
-  },
   "name": "audio-player",
   "version": "1.0.0",
   "type": "module",
   "devDependencies": {
-    "@happy-dom/jest-environment": "2.55.0",
-    "jest": "^27.5.1",
-    "vite": "2.9.9",
-    "vite-jest": "^0.1.4"
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@web/dev-server": "^0.1.34",
+    "@web/test-runner": "^0.14.0",
+    "@web/test-runner-commands": "^0.6.5",
+    "@web/test-runner-playwright": "^0.8.10",
+    "sinon": "^14.0.1"
   },
   "scripts": {
-    "dev": "vite src",
-    "build": "vite build src",
-    "preview": "vite preview src",
-    "test": "vite-jest  --no-cache",
-    "test:watch": "vite-jest --watch",
-    "test:coverage": "vite-jest  --no-cache --coverage"
+    "dev": "web-dev-server --node-resolve --open --watch --app-index src/index.html",
+    "test": "web-test-runner src/**/*.test.js --node-resolve  --playwright",
+    "test:watch": "web-test-runner src/**/*.test.js --node-resolve  --playwright --watch"
   },
-  "author": "",
+  "author": "rudywaltz",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "uhtml": "^3.1.0"
+  }
 }

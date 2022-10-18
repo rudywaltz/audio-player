@@ -1,8 +1,9 @@
+import { expect } from '@esm-bundle/chai';
 import { CustomElement } from "../src/customElement";
 
 
 describe('customElement', () => {
-  test('attribute change', () => {
+  it('attribute change', () => {
     class TestComponent extends CustomElement {
       #simpleValue = ''
       #complexValue =''
@@ -27,23 +28,24 @@ describe('customElement', () => {
         return this.#complexValue
       }
     }
+
     const testValue = 'test value'
     customElements.define('test-component', TestComponent)
 
     const audioTrackELement = document.createElement('test-component')
     document.body.appendChild(audioTrackELement)
     audioTrackELement.setAttribute('simple', testValue)
-    expect(audioTrackELement.simple).toBe(`expected ${testValue}`)
+    expect(audioTrackELement.simple).to.be.eq(`expected ${testValue}`)
   })
 
 
-  test('attribute change', () => {
+  it('attribute change', () => {
     const testValue = 'test value'
 
     const audioTrackELement = document.createElement('test-component')
     document.body.appendChild(audioTrackELement)
     audioTrackELement.setAttribute('complex-attribute', testValue)
-    expect(audioTrackELement.complexAttribute).toBe(`expected ${testValue}`)
+    expect(audioTrackELement.complexAttribute).to.be.eq(`expected ${testValue}`)
   })
 
 })

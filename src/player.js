@@ -1,28 +1,32 @@
+import { render } from 'uhtml';
 import { CustomElement } from './customElement'
 import { displayLength } from './utils/displayLength'
+import PlayerTemplate from './template/playerTemplate'
 
 class AudioPlayer extends CustomElement {
   #songUrl
   #title
   #wrapperElemenent = document.createElement('div')
-  #playButtonElement = document.createElement('button')
-  #durationElement = document.createElement('span')
+  #shadow = this.attachShadow({ mode: "open" });
+  #state = {
+    paused: true,
+    duration: null,
+    currentTime: 0,
+  };
+
+  #events = {
+    toggleSong: this.toggleSong.bind(this)
+  };
+
+  #refs = {};
+  #playerTemplate = new PlayerTemplate(this.#state, this.#events);
   audio = null
 
   connectedCallback() {
     this.#wrapperElemenent.innerHTML = '';
+    this.#shadow.appendChild(this.#wrapperElemenent);
 
-    this.#playButtonElement.textContent = 'Play';
-    this.#playButtonElement.dataset.test = 'play-button';
-    this.#playButtonElement.type = 'button';
-
-    this.#durationElement.dataset.test = 'duration-element';
-
-    this.#wrapperElemenent.appendChild(this.#playButtonElement);
-    this.#wrapperElemenent.appendChild(this.#durationElement);
-    this.appendChild(this.#wrapperElemenent);
-
-    this.#playButtonElement.addEventListener('click', this.toggleSong.bind(this));
+    this.#render();
   }
 
   static get observedAttributes() {
@@ -46,40 +50,59 @@ class AudioPlayer extends CustomElement {
   }
 
 
-  toggleSong() {
+  async toggleSong() {
     if (!this.audioContext) {
       this.#initAudio();
-      this.#startPlaying();
+      await this.#startPlaying();
     } else if(this.audio.paused) {
-      this.#playButtonElement.textContent = 'Pause';
-      this.audio.play();
+      await this.audio.play();
     } else {
-      this.#playButtonElement.textContent = 'Play';
       this.audio.pause();
     }
+
+    this.#state.paused = this.audio.paused;
+    this.#render();
+  }
+
+  #render() {
+    render(this.#wrapperElemenent, this.#playerTemplate.createElement())
   }
 
   #initAudio() {
-    /* istanbul ignore next */
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const AudioContext = window.AudioContext;
     this.audioContext = new AudioContext();
     this.audio = document.createElement('audio');
     this.audio.crossOrigin = 'Anonymous';
     const source = this.audioContext.createMediaElementSource(this.audio);
     source.connect(this.audioContext.destination);
+
+    this.audio.addEventListener('timeupdate', this.#updateEllipsedTime.bind(this));
   }
 
   #startPlaying() {
-    this.audio.addEventListener(
-      "canplay",
-      () => {
-        this.#durationElement.textContent = displayLength(this.audio.duration)
-        this.audioContext.resume();
-        this.audio.play();
-        this.#playButtonElement.textContent = 'Pause'
-      }, { once: true } )
+    return new Promise((resolve, reject) => {
+      this.audio.addEventListener(
+        "canplay",
+        async () => {
+          try {
+            this.#state.duration = this.audio.duration
+            this.audioContext.resume();
+            await this.audio.play();
+            this.#state.paused = false;
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        }, { once: true } )
 
-      this.audio.src = this.song
+        this.audio.src = this.song
+    })
+  }
+
+  #updateEllipsedTime() {
+    this.#state.currentTime = this.audio.currentTime;
+
+    this.#render();
   }
 }
 

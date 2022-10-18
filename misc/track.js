@@ -1,4 +1,4 @@
-import { CustomElement } from './customElement.js'
+import { CustomElement } from '../src/customElement.js'
 
 class AudioTrack extends CustomElement {
   #title = ''

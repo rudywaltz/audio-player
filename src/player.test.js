@@ -21,11 +21,15 @@ describe('audio-player', () => {
 
   it('should render default markup', async () => {
     document.body.innerHTML = `<audio-player title="Song Title" song="./test/podcast_jezus_raketta.mp3"></audio-player>`;
-    const player = document.querySelector('audio-player')
+    const player = document.querySelector('audio-player');
 
-    const playButton = player.shadowRoot.querySelector('[data-test="play-button"]')
+    const playButton = player.shadowRoot.querySelector('[data-test="play-button"]');
+    const duration = player.shadowRoot.querySelector('[data-test="duration-element"]');
+    const current = player.shadowRoot.querySelector('[data-test="current-element"]');
 
-    expect(playButton.textContent).to.be.eq('Play')
+    expect(playButton.textContent).to.be.eq('Play');
+    expect(duration.textContent).to.be.eq('--:--:--');
+    expect(current.textContent).to.be.eq('00:00:00');
   })
 
   it('should start the playing after click', async () => {
@@ -68,5 +72,19 @@ describe('audio-player', () => {
     const durationElement = player.shadowRoot.querySelector('[data-test="duration-element"]')
 
     expect(durationElement.textContent).to.be.eq('00:05:46')
+  })
+
+  it('should display the formatted ellipsed time', async () => {
+    document.body.innerHTML = `<audio-player title="Song Title" song="./test/podcast_jezus_raketta.mp3"></audio-player>`;
+    const player = document.querySelector('audio-player')
+    const playButton = player.shadowRoot.querySelector('[data-test="play-button"]')
+
+    playButton.click()
+    await new Promise(resolve => setTimeout(() => resolve(), 1000))
+
+
+    const currentElement = player.shadowRoot.querySelector('[data-test="current-element"]')
+
+    expect(currentElement.textContent).to.be.eq('00:00:01')
   })
 })

@@ -13,15 +13,14 @@ class PlayerTemplate {
   createElement() {
     return html`
      ${this.#playButton()}
-     ${this.#currentTime()}&nbsp;/&nbsp;
-     ${this.#duration()}
-     `;
+     ${this.#currentTime()}&nbsp;/&nbsp;${this.#duration()}
+    `;
   }
 
   #playButton() {
     const buttonLabel = this.#state.paused ? 'Play' : 'Pause';
     return html`
-      <button type="button"  data-test="play-button" @click=${(event) => this.#events.toggleSong()}>${buttonLabel}</button>`
+      <button type="button"  data-test="play-button" @click=${() => this.#events.toggleSong()}>${buttonLabel}</button>`
   }
 
   #duration() {

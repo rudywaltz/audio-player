@@ -1,4 +1,4 @@
-import { CustomElement } from './customElement'
+import { CustomElement } from '../src/customElement'
 
 class AudioPlayer extends CustomElement {
   audioContext = null
@@ -249,4 +249,4 @@ class AudioPlayer extends CustomElement {
 }
 
 
-customElements.define('audio-player', AudioPlayer);
+customElements.define('audio-player-yo', AudioPlayer);

@@ -8,7 +8,7 @@ describe('audio-player', () => {
     await sendMouse({
       type: 'click',
       position: [1, 1],
-      button: 'right'
+      button: 'left'
     });
   });
 
@@ -54,6 +54,7 @@ describe('audio-player', () => {
     playButton.click()
 
     await new Promise(resolve => setTimeout(() => resolve(), 100))
+
     playButton.click()
 
     expect(playButton.textContent).to.be.eq('Play')
@@ -86,5 +87,27 @@ describe('audio-player', () => {
     const currentElement = player.shadowRoot.querySelector('[data-test="current-element"]')
 
     expect(currentElement.textContent).to.be.eq('00:00:01')
+  })
+
+  it('should display the formatted ellipsed time', async () => {
+    document.body.innerHTML = `<audio-player title="Song Title" song="./test/podcast_jezus_raketta.mp3"></audio-player>`;
+    const player = document.querySelector('audio-player')
+    const playButton = player.shadowRoot.querySelector('[data-test="play-button"]')
+    const timeRange = player.shadowRoot.querySelector('#timerange');
+    playButton.click()
+    await new Promise(resolve => setTimeout(() => resolve(), 100))
+
+    const half = Math.ceil(timeRange.getBoundingClientRect().x + timeRange.getBoundingClientRect().width / 2);
+    await sendMouse({
+      type: 'click',
+      position: [half, Math.ceil(timeRange.getBoundingClientRect().y)],
+      button: 'left'
+
+    });
+
+
+    const currentElement = player.shadowRoot.querySelector('[data-test="current-element"]')
+
+    expect(currentElement.textContent).to.be.eq('00:02:53')
   })
 })

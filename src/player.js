@@ -1,6 +1,5 @@
 import { render } from 'uhtml';
 import { CustomElement } from './customElement'
-import { displayLength } from './utils/displayLength'
 import PlayerTemplate from './template/playerTemplate'
 
 class AudioPlayer extends CustomElement {
@@ -15,11 +14,12 @@ class AudioPlayer extends CustomElement {
   };
 
   #events = {
-    toggleSong: this.toggleSong.bind(this)
+    toggleSong: this.toggleSong.bind(this),
+    clickOnTimeBar: this.#clickOnTimeBar.bind(this)
   };
 
   #refs = {};
-  #playerTemplate = new PlayerTemplate(this.#state, this.#events);
+  #playerTemplate = new PlayerTemplate(this.#state, this.#events, this.#refs);
   audio = null
 
   connectedCallback() {
@@ -77,6 +77,7 @@ class AudioPlayer extends CustomElement {
     source.connect(this.audioContext.destination);
 
     this.audio.addEventListener('timeupdate', this.#updateEllipsedTime.bind(this));
+    this.audio.addEventListener('ended', this.#onEnd.bind(this))
   }
 
   #startPlaying() {
@@ -102,6 +103,20 @@ class AudioPlayer extends CustomElement {
   #updateEllipsedTime() {
     this.#state.currentTime = this.audio.currentTime;
 
+    this.#render();
+  }
+
+  #clickOnTimeBar(event, value) {
+    if(!this.audio) {
+      event.target.value = 0;
+      return;
+    }
+
+    this.audio.currentTime = this.audio.duration * value / 100;
+  }
+
+  #onEnd() {
+    this.#state.paused = true;
     this.#render();
   }
 }

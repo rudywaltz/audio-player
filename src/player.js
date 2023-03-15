@@ -1,12 +1,12 @@
 import { render } from 'uhtml';
-import { CustomElement } from './customElement'
-import PlayerTemplate from './template/playerTemplate'
+import { CustomElement } from './customElement';
+import PlayerTemplate from './template/playerTemplate';
 
 class AudioPlayer extends CustomElement {
-  #songUrl
-  #title
-  #wrapperElemenent = document.createElement('div')
-  #shadow = this.attachShadow({ mode: "open" });
+  #songUrl;
+  #title;
+  #wrapperElemenent = document.createElement('div');
+  #shadow = this.attachShadow({ mode: 'open' });
   #state = {
     paused: true,
     duration: null,
@@ -15,12 +15,17 @@ class AudioPlayer extends CustomElement {
 
   #events = {
     toggleSong: this.toggleSong.bind(this),
-    clickOnTimeBar: this.#clickOnTimeBar.bind(this)
+    clickOnTimeBar: this.#clickOnTimeBar.bind(this),
+    clickOnFwButton: this.#clickOnFwButton.bind(this),
+    clickOnBwButton: this.#clickOnBwButton.bind(this),
   };
 
-  #refs = {};
-  #playerTemplate = new PlayerTemplate(this.#state, this.#events, this.#refs);
-  audio = null
+  #refs = {
+    timeRange: null,
+  };
+
+  #playerTemplate = new PlayerTemplate(this.#state, this.#events, this.#refs, this.audio);
+  audio = null;
 
   connectedCallback() {
     this.#wrapperElemenent.innerHTML = '';
@@ -49,12 +54,11 @@ class AudioPlayer extends CustomElement {
     return this.#title;
   }
 
-
   async toggleSong() {
     if (!this.audioContext) {
       this.#initAudio();
       await this.#startPlaying();
-    } else if(this.audio.paused) {
+    } else if (this.audio.paused) {
       await this.audio.play();
     } else {
       this.audio.pause();
@@ -65,7 +69,7 @@ class AudioPlayer extends CustomElement {
   }
 
   #render() {
-    render(this.#wrapperElemenent, this.#playerTemplate.createElement())
+    render(this.#wrapperElemenent, this.#playerTemplate.createElement());
   }
 
   #initAudio() {
@@ -77,16 +81,16 @@ class AudioPlayer extends CustomElement {
     source.connect(this.audioContext.destination);
 
     this.audio.addEventListener('timeupdate', this.#updateEllipsedTime.bind(this));
-    this.audio.addEventListener('ended', this.#onEnd.bind(this))
+    this.audio.addEventListener('ended', this.#onEnd.bind(this));
   }
 
   #startPlaying() {
     return new Promise((resolve, reject) => {
       this.audio.addEventListener(
-        "canplay",
+        'canplay',
         async () => {
           try {
-            this.#state.duration = this.audio.duration
+            this.#state.duration = this.audio.duration;
             this.audioContext.resume();
             await this.audio.play();
             this.#state.paused = false;
@@ -94,10 +98,12 @@ class AudioPlayer extends CustomElement {
           } catch (error) {
             reject(error);
           }
-        }, { once: true } )
+        },
+        { once: true }
+      );
 
-        this.audio.src = this.song
-    })
+      this.audio.src = this.song;
+    });
   }
 
   #updateEllipsedTime() {
@@ -107,16 +113,37 @@ class AudioPlayer extends CustomElement {
   }
 
   #clickOnTimeBar(event, value) {
-    if(!this.audio) {
+    if (!this.audio) {
       event.target.value = 0;
       return;
     }
 
-    this.audio.currentTime = this.audio.duration * value / 100;
+    this.audio.currentTime = (this.audio.duration * value) / 100;
+    this.#updateEllipsedTime();
+  }
+
+  #clickOnFwButton() {
+    if (!this.audio) {
+      return;
+    }
+
+    this.audio.currentTime = this.audio.currentTime + 10;
+    this.#updateEllipsedTime();
+  }
+
+  #clickOnBwButton() {
+    if (!this.audio) {
+      return;
+    }
+
+    this.audio.currentTime = this.audio.currentTime - 10;
+    this.#updateEllipsedTime();
   }
 
   #onEnd() {
     this.#state.paused = true;
+    this.#refs.timeRange.value = 0;
+
     this.#render();
   }
 }

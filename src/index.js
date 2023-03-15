@@ -1,2 +1,2 @@
-import './player'
-import '../misc/qqq'
+import './player';
+import '../misc/qqq';
